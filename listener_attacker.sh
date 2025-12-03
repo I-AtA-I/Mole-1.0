@@ -9,10 +9,10 @@ while true; do
   clear
   echo "You inputed" $targetusername "as target username and " $targetIP "as target IP, correct? y/n :"
   read correction
-  if [ correction = "y" ]; then
+  if [ $correction = "y" ]; then
     "ssh -p 9000" $targetusername"@"$targetIP
     break
-  elif [ correctionIP = "n" ]; then
+  elif [ $correction = "n" ]; then
     echo " "
   else
     echo "Invalid input..."
