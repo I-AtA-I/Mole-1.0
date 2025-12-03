@@ -42,18 +42,6 @@ def run_ps(command):
 permapath = r'[Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";C:\Windows\System32\OpenSSH", [System.EnvironmentVariableTarget]::Machine)'
 run_ps(permapath)
 
-#def run_ps(command):
-#    ps = r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
-#    # Copy current environment
-#    env = os.environ.copy()
-    # Append OpenSSH path
-#    env["PATH"] += r";C:\Windows\System32\OpenSSH"
-#    return subprocess.run(
-#        [ps, "-NoProfile", "-Command", command],
-#        check=True, capture_output=True, text=True,
-#        env=env
-#    )
-
 #define powershell path
 pspath = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
 
@@ -61,19 +49,24 @@ pspath = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
 #installing OpenSSH Client and Server via PowerShell commands
 
 installsshd="Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0"
-#run_ps(installsshd)
+run_ps(installsshd)
 
 installsshdserver="Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0"
-#run_ps(installsshdserver)
-#sleep(2)
+run_ps(installsshdserver)
+sleep(2)
 startservice="Start-Service sshd"
-#run_ps(startservice)
-#sleep(2)
+run_ps(startservice)
+sleep(2)
 startupsshd="Set-Service -Name sshd -StartupType 'Automatic'"
-#run_ps(startupsshd)
-#sleep(2)
+run_ps(startupsshd)
+sleep(2)
 addtopath = '$env:PATH += ";C:\\Windows\\System32\\OpenSSH"'
 run_ps(addtopath)
+
+fwr22 = 'New-NetFirewallRule -DisplayName "Allow SSH 22" -Direction Inbound -Protocol TCP -LocalPort 22 -Action Allow'
+run_ps(fwr22)
+fwr9000 = 'New-NetFirewallRule -DisplayName "Allow SSH Tunnel 9000" -Direction Inbound -Protocol TCP -LocalPort 9000 -Action Allow'
+run_ps(fwr9000)
 
 print(Fore.YELLOW + "!!!THIS PROGRAM IS NEEDED TO "+ Fore.RED + "RUN VIA CMD WITH ADMIN PRIVILEGES " + Fore.YELLOW + "TO RUN PROPERLY!!!")
 sleep(4)
