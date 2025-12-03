@@ -1,1 +1,3 @@
 CLI multi-use .py payload for BadUSB inject...
+
+!!!On attacker site you need to allow "GatewayPorts" (GatewayPorts yes) in etc/ssh/sshd_config!!!
