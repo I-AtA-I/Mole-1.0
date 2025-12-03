@@ -5,7 +5,7 @@ echo "Put in password for sudo"
 read sudo
 
 
-sudo pacman -S sshd
+sudo pacman -S openssh
 sudo systemctl enable sshd
 sudo systemctl enable sshd
 sudo systemctl start sshd
