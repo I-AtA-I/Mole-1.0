@@ -56,6 +56,19 @@ while True:
     sleep(0.1)
     action = input("Your action: ")
     cls()
+
+
+#Action 0 = Printing the outcome of the scan
+    if action == "0":
+        if scanverify == "yes":
+            print(Fore.RED + info)
+        else:
+            cls()
+            print("Scan was not initiated (action 1), run scan first")
+            sleep(4)
+    else:
+        print("")
+
     if action == "1":
         scanverify = "yes"
         cls()
@@ -110,23 +123,6 @@ while True:
     else:
         print("")
 
-#Action 0 = Printing the outcome of the scan
-    if action == "0":
-        if scanverify == "yes":
-            print(Fore.RED + info)
-        else:
-            cls()
-            print("Scan was not initiated (action 1), run scan first")
-            sleep(4)
-    else:
-        print("")
-
-#Action 99 = exiting the program
-    if action == "99":
-        print("Exiting the program...")
-        sleep(3)
-        exit()
-
 #Action 3 = local SSH connection
     if action == "3":
         print(Fore.RED + "!!!Warning, you need to run a script on the attacker side aswell before this action!!!")
@@ -148,3 +144,11 @@ while True:
             print(" ")
     else:
         print("")
+
+#Action 99 = exiting the program
+    if action == "99":
+        print("Exiting the program...")
+        sleep(3)
+        exit()
+
+
