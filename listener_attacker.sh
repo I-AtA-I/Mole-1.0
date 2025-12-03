@@ -1,6 +1,17 @@
 #!/bin/bash
 echo "This program will start a listener for a reverse ssh..."
 
+echo "Put in password for sudo"
+read sudo
+
+
+sudo pacman -S sshd
+sudo systemctl enable sshd
+sudo systemctl enable sshd
+sudo systemctl start sshd
+
+sudo ufw disable
+
 while true; do
   echo "Input target username: "
   read targetusername
