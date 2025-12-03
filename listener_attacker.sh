@@ -12,14 +12,12 @@ sudo ufw allow 22/tcp
 while true; do
   echo -n "Input target username (Windows user): "
   read targetusername
-  echo -n "Input target IP (Windows host IP): "
-  read targetIP
   clear
   echo "You entered $targetusername@$targetIP, correct? y/n :"
   read correction
   if [ "$correction" = "y" ]; then
     # Connect to the Windows host on port 9000
-    ssh -p 9000 "$targetusername@$targetIP"
+    ssh -p 9000 "$targetusername@localhost"
     break
   elif [ "$correction" = "n" ]; then
     echo "Let's try again..."
