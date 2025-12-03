@@ -10,7 +10,9 @@ sudo systemctl enable sshd
 sudo systemctl enable sshd
 sudo systemctl start sshd
 
-sudo ufw disable
+sudo ufw enable
+sudo ufw allow 22/tcp
+sudo ufw allow 9000/tcp
 
 while true; do
   echo "Input target username: "
