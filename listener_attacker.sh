@@ -1,3 +1,5 @@
+#!/bin/bash
+
 while true; do
   echo "Input target username: "
   read targetusername
