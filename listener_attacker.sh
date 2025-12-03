@@ -1,32 +1,28 @@
 #!/bin/bash
 echo "This program will start a listener for a reverse ssh..."
 
-echo "Put in password for sudo"
-read sudo
-
-
-sudo pacman -S openssh
-sudo systemctl enable sshd
+# Make sure OpenSSH is installed and running
+sudo pacman -S --noconfirm openssh
 sudo systemctl enable sshd
 sudo systemctl start sshd
 
-sudo ufw enable
+# Allow SSH through firewall
 sudo ufw allow 22/tcp
-sudo ufw allow 9000/tcp
 
 while true; do
-  echo "Input target username: "
+  echo -n "Input target username (Windows user): "
   read targetusername
-  echo "Input target IP (without port): "
+  echo -n "Input target IP (Windows host IP): "
   read targetIP
   clear
-  echo "You inputed" $targetusername "as target username and " $targetIP "as target IP, correct? y/n :"
+  echo "You entered $targetusername@$targetIP, correct? y/n :"
   read correction
-  if [ $correction = "y" ]; then
+  if [ "$correction" = "y" ]; then
+    # Connect to the Windows host on port 9000
     ssh -p 9000 "$targetusername@$targetIP"
     break
-  elif [ $correction = "n" ]; then
-    echo " "
+  elif [ "$correction" = "n" ]; then
+    echo "Let's try again..."
   else
     echo "Invalid input..."
   fi
