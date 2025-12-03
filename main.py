@@ -144,6 +144,9 @@ while True:
                     break
                 else:
                     print(" ")
+            else:
+                print(" ")
+                break
     else:
         print("")
 
