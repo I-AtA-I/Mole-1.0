@@ -14,6 +14,7 @@ from time import sleep
 import platform
 import subprocess
 
+#trying to find powershell path
 def find_powershell():
     # Try PowerShell Core first
     pwsh_path = r"C:\Program Files\PowerShell\7\pwsh.exe"
@@ -27,7 +28,7 @@ def find_powershell():
 
     raise FileNotFoundError("No PowerShell executable found")
 
-
+#defining "run_ps" command to bypass subprocess.run error and PowerShell path not being able to be located
 def run_ps(command):
     ps = r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
     env = os.environ.copy()
@@ -39,6 +40,7 @@ def run_ps(command):
     )
     proc.wait()
 
+#adding PowerShell path to a pernament PATH
 permapath = r'[Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";C:\Windows\System32\OpenSSH", [System.EnvironmentVariableTarget]::Machine)'
 run_ps(permapath)
 
@@ -46,8 +48,8 @@ run_ps(permapath)
 pspath = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
 
 #link for the openSSH installation: https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell&pivots=windows-10
-#installing OpenSSH Client and Server via PowerShell commands
 
+#installing OpenSSH Client and Server via PowerShell commands
 installsshd="Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0"
 run_ps(installsshd)
 
@@ -63,6 +65,7 @@ sleep(2)
 addtopath = '$env:PATH += ";C:\\Windows\\System32\\OpenSSH"'
 run_ps(addtopath)
 
+#allowing p22 and p9000 in firewall
 fwr22 = 'New-NetFirewallRule -DisplayName "Allow SSH 22" -Direction Inbound -Protocol TCP -LocalPort 22 -Action Allow'
 run_ps(fwr22)
 fwr9000 = 'New-NetFirewallRule -DisplayName "Allow SSH Tunnel 9000" -Direction Inbound -Protocol TCP -LocalPort 9000 -Action Allow'
