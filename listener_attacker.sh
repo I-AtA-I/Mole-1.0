@@ -13,7 +13,7 @@ while true; do
   echo -n "Input target username (Windows user): "
   read targetusername
   clear
-  echo "You entered $targetusername, correct? y/n :"
+  echo "You entered $targetusername , correct? y/n :"
   read correction
   if [ "$correction" = "y" ]; then
     # Connect to the Windows host on port 9000
