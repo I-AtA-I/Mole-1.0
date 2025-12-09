@@ -16,7 +16,3 @@ Steps:
 4) run install_py.bat on the target machine installing python onto it (takes a few seconds)
 5) open admin powershell and start main.py
 
-```stl
-<p>
-MOLE
-<p/>
