@@ -93,6 +93,16 @@ while True:
         sleep(0.5)
         break
 
+ascii_art = """
+ __  __  ___  _     _____
+|  \/  |/ _ \| |   | ____|
+| |\/| | | | | |   |  _|
+| |  | | |_| | |___| |___
+|_|  |_|\___/|_____|_____|
+"""
+
+print(Fore.RED + ascii_art)
+
 
 #ask to scan the machine whilst if "y" then gather system information else if "n" ask to continue else exit
 print("Welcome, ")
