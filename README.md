@@ -1,3 +1,4 @@
+<img width="316" height="144" alt="ascii-art-image" src="https://github.com/user-attachments/assets/2e8882a9-1cef-47f4-b5e3-9db86d889756" />
 
 
 mole is a CLI multi-use .py payload for BadUSB inject...
